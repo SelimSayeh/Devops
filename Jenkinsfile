@@ -2,11 +2,11 @@ pipeline {
 	agent any
 
 	stages{
-			stage('Clean Package'){
+						stage('Clean Package'){
 				steps{
-	 mvn clean package
-}
+					bat "mvn clean package"
 				}				
+			}			
 			
 	    stage('push to nexus'){
 				steps{
