@@ -4,8 +4,7 @@ pipeline {
 	stages{
 			stage('Clean Package'){
 				steps{
-					withMaven(jdk: 'jdk-7', maven: 'Maven_Home', mavenLocalRepo: 'mvn clean package', tempBinDir: '\bin') {
-    mvn clean package
+	 mvn clean package
 }
 				}				
 			}
