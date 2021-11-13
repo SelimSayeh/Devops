@@ -4,7 +4,7 @@ pipeline {
 	stages{
 			stage('Clean Package'){
 				steps{
-					bat "mvn clean package"
+					bat "D:\apache-maven-3.8.3-bin\apache-maven-3.8.3\bin\mvn clean package"
 				}				
 			}
 	    stage('push to nexus'){
