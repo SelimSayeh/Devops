@@ -4,7 +4,9 @@ pipeline {
 	stages{
 			stage('Clean Package'){
 				steps{
-					bat "mvn clean package"
+					withMaven(jdk: 'jdk-7', maven: 'Maven_Home', mavenLocalRepo: 'mvn clean package', tempBinDir: '\bin') {
+    mvn clean package
+}
 				}				
 			}
 	    stage('push to nexus'){
