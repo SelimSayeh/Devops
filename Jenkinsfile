@@ -7,7 +7,7 @@ pipeline {
 	 mvn clean package
 }
 				}				
-			}
+			
 	    stage('push to nexus'){
 				steps{
                     nexusArtifactUploader artifacts: [
