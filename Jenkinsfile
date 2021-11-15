@@ -56,11 +56,13 @@ pipeline {
             }
 	   }
 			
-            stage('Sonar Analyse'){
-				steps{
-                    bat "mvn sonar:sonar"
-                  }
+           stage('SonarQube analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh "./gradlew sonarqube"
+                }
             }
+        }
 			stage('Deploy'){
 				steps{
 					bat "mvn deploy"
