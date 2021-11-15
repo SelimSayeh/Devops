@@ -49,6 +49,7 @@ pipeline {
                     }
                 }
             }
+	   }
 			
             stage('Sonar Analyse'){
 				steps{
