@@ -1,12 +1,5 @@
 pipeline {
 	agent any
-
-	stages{
-						stage('Clean Package'){
-				steps{
-					bat "mvn clean package"
-				}				
-			}
 		environment {
         NEXUS_VERSION = "nexus3"
         NEXUS_PROTOCOL = "http"
@@ -14,6 +7,14 @@ pipeline {
         NEXUS_REPOSITORY = "maven-nexus-repo"
         NEXUS_CREDENTIAL_ID = "jenkins"
     }
+
+	stages{
+						stage('Clean Package'){
+				steps{
+					bat "mvn clean package"
+				}				
+			}
+	
 			
 	   stage("Publish to Nexus Repository Manager") {
             steps {
