@@ -6,26 +6,48 @@ pipeline {
 				steps{
 					bat "mvn clean package"
 				}				
-			}			
+			}
+		environment {
+        NEXUS_VERSION = "nexus3"
+        NEXUS_PROTOCOL = "http"
+        NEXUS_URL = "127.0.0.1:8081"
+        NEXUS_REPOSITORY = "maven-nexus-repo"
+        NEXUS_CREDENTIAL_ID = "jenkins"
+    }
 			
-	    stage('push to nexus'){
-				steps{
-                    nexusArtifactUploader artifacts: [
-			    [
-				    artifactId: 'timesheet', 
-				    classifier: '',
-				    file: 'target/timesheet-1.2.3.war',
-				    type: 'war'
-			    ]
-		    ],
-			    credentialsId: '296eb851-c66c-46c8-a414-da5b8877166f', 
-			    groupId: 'tn.esprit.spring', 
-			    nexusUrl: 'localhost:8081', 
-			    nexusVersion: 'nexus3', 
-			    protocol: 'http', 
-			    repository: 'http://localhost:8081/repository/selimdevops/', 
-			    version: '1.2.3'
-                  }
+	   stage("Publish to Nexus Repository Manager") {
+            steps {
+                script {
+                    pom = readMavenPom file: "pom.xml";
+                    filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
+                    echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
+                    artifactPath = filesByGlob[0].path;
+                    artifactExists = fileExists artifactPath;
+                    if(artifactExists) {
+                        echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}";
+                        nexusArtifactUploader(
+                            nexusVersion: NEXUS_VERSION,
+                            protocol: NEXUS_PROTOCOL,
+                            nexusUrl: NEXUS_URL,
+                            groupId: pom.groupId,
+                            version: pom.version,
+                            repository: NEXUS_REPOSITORY,
+                            credentialsId: NEXUS_CREDENTIAL_ID,
+                            artifacts: [
+                                [artifactId: pom.artifactId,
+                                classifier: '',
+                                file: artifactPath,
+                                type: pom.packaging],
+                                [artifactId: pom.artifactId,
+                                classifier: '',
+                                file: "pom.xml",
+                                type: "pom"]
+                            ]
+                        );
+                    } else {
+                        error "*** File: ${artifactPath}, could not be found";
+                    }
+                }
             }
 			
             stage('Sonar Analyse'){
